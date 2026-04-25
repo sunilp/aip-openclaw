@@ -39,5 +39,11 @@
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
   },
-  "license": "Apache-2.0"
+  "files": ["dist", "skill", "aip-manifest.example.toml"],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sunilp/aip-openclaw.git"
+  },
+  "author": "Sunil Prakash"
 }
