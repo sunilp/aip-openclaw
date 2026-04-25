@@ -1,10 +1,28 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { join, basename } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { join, basename, dirname } from "node:path";
+import { homedir } from "node:os";
 import { KeyPair } from "@aip-protocol/core";
 import { signSkill } from "./sign.js";
 import { verifySkill } from "./verify.js";
+
+const DEFAULT_KEY_DIR = join(homedir(), ".aip-openclaw", "keys");
+const DEFAULT_KEY_FILE = join(DEFAULT_KEY_DIR, "default.key");
+
+async function loadOrCreateKey(keyFile?: string): Promise<KeyPair> {
+  const path = keyFile ?? DEFAULT_KEY_FILE;
+  if (existsSync(path)) {
+    const hex = readFileSync(path, "utf-8").trim();
+    const seed = Buffer.from(hex, "hex");
+    return KeyPair.fromSeed(new Uint8Array(seed));
+  }
+  // Generate new key
+  const kp = await KeyPair.generate();
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, Buffer.from(kp.privateKeyBytes()).toString("hex") + "\n", { mode: 0o600 });
+  return kp;
+}
 
 const program = new Command();
 
@@ -18,10 +36,11 @@ program
   .description("Sign a skill directory with an AIP identity")
   .option("--skill-name <name>", "Skill name (defaults to directory name)")
   .option("--expiry-days <days>", "Signature expiry in days", "365")
+  .option("--key-file <path>", "Path to key file (default: ~/.aip-openclaw/keys/default.key)")
   .action(async (skillDir: string, opts) => {
     const skillName = opts.skillName ?? basename(skillDir);
     const expiryDays = parseInt(opts.expiryDays, 10);
-    const kp = await KeyPair.generate();
+    const kp = await loadOrCreateKey(opts.keyFile);
     const envelope = await signSkill(skillDir, kp, skillName, expiryDays);
     console.log(`Signed "${skillName}" successfully.`);
     console.log(`  Author: ${envelope.author}`);
@@ -70,6 +89,29 @@ program
     writeFileSync(manifestPath, manifest);
     console.log(`Generated ${manifestPath}`);
     console.log("Review and tighten the capabilities before signing.");
+  });
+
+program
+  .command("keygen")
+  .description("Generate a new Ed25519 keypair and save it to a key file")
+  .option("--key-file <path>", "Path to key file (default: ~/.aip-openclaw/keys/default.key)")
+  .option("--force", "Overwrite existing key file")
+  .action(async (opts) => {
+    const path = opts.keyFile ?? DEFAULT_KEY_FILE;
+    if (existsSync(path) && !opts.force) {
+      const hex = readFileSync(path, "utf-8").trim();
+      const seed = Buffer.from(hex, "hex");
+      const kp = await KeyPair.fromSeed(new Uint8Array(seed));
+      console.log(`Key already exists at ${path}`);
+      console.log(`Public key: ${kp.publicKeyMultibase()}`);
+      console.log("Use --force to overwrite.");
+      return;
+    }
+    const kp = await KeyPair.generate();
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, Buffer.from(kp.privateKeyBytes()).toString("hex") + "\n", { mode: 0o600 });
+    console.log(`Key saved to ${path}`);
+    console.log(`Public key: ${kp.publicKeyMultibase()}`);
   });
 
 program

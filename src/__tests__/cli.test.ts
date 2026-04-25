@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdtempSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { rmSync } from "node:fs";
 import { execSync } from "node:child_process";
 
 const CLI_CWD = "/Users/sunilp/Development/sunil-ws/me/aip-openclaw";
@@ -56,5 +55,32 @@ describe("CLI", () => {
     const content = readFileSync(join(skillDir, "aip-manifest.toml"), "utf-8");
     expect(content).toContain("[manifest]");
     expect(content).toContain("skill_name");
+  });
+
+  it("keygen creates a key file", () => {
+    const keyFile = join(skillDir, "test.key");
+    const result = execSync(
+      `npx tsx src/cli.ts keygen --key-file ${keyFile}`,
+      { cwd: CLI_CWD, encoding: "utf-8" }
+    );
+    expect(existsSync(keyFile)).toBe(true);
+    expect(result).toContain("z"); // multibase public key
+  });
+
+  it("sign reuses existing key", () => {
+    const keyFile = join(skillDir, "reuse.key");
+    execSync(`npx tsx src/cli.ts keygen --key-file ${keyFile}`, { cwd: CLI_CWD });
+    execSync(`npx tsx src/cli.ts sign ${skillDir} --skill-name reuse-test --key-file ${keyFile}`, { cwd: CLI_CWD });
+
+    const sigContent = readFileSync(join(skillDir, ".aip-signature"), "utf-8");
+    const authorMatch = sigContent.match(/author = "([^"]+)"/);
+
+    // Sign again with same key
+    rmSync(join(skillDir, ".aip-signature"));
+    execSync(`npx tsx src/cli.ts sign ${skillDir} --skill-name reuse-test --key-file ${keyFile}`, { cwd: CLI_CWD });
+    const sigContent2 = readFileSync(join(skillDir, ".aip-signature"), "utf-8");
+    const authorMatch2 = sigContent2.match(/author = "([^"]+)"/);
+
+    expect(authorMatch![1]).toBe(authorMatch2![1]); // Same author key
   });
 });
