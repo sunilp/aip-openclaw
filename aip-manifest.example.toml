@@ -1,0 +1,31 @@
+# Example AIP capability manifest for an OpenClaw skill.
+# Place this file as aip-manifest.toml alongside your SKILL.md.
+# Then sign: npx aip-openclaw sign ./my-skill/
+
+[manifest]
+schema_version = 1
+skill_name = "my-skill"
+
+[capabilities.mcp_tools]
+# List the MCP tools this skill needs
+allow = ["search", "read_file"]
+
+[capabilities.network]
+# Domains this skill can reach ("none" for no network)
+allow = ["api.example.com"]
+
+[capabilities.filesystem]
+# Glob patterns for file access ("none" for no access)
+read = ["/tmp/my-skill/*"]
+write = "none"
+
+[capabilities.shell]
+enabled = false
+
+[capabilities.budget]
+max_usd_per_invocation = 0.50
+max_invocations_per_hour = 100
+
+[capabilities.delegation]
+enabled = false
+max_depth = 0
