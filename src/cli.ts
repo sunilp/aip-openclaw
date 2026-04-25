@@ -3,7 +3,7 @@ import { Command } from "commander";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, basename, dirname } from "node:path";
 import { homedir } from "node:os";
-import { KeyPair } from "@aip-protocol/core";
+import { KeyPair } from "@aip-sdk/core";
 import { signSkill } from "./sign.js";
 import { verifySkill } from "./verify.js";
 

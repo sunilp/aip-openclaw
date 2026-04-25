@@ -39,7 +39,7 @@ aip-openclaw verify ./my-skill/
 
 ```typescript
 import { signSkill, verifySkill, AipGuard, parseManifest } from "aip-openclaw";
-import { KeyPair } from "@aip-protocol/core";
+import { KeyPair } from "@aip-sdk/core";
 
 // Sign a skill
 const kp = await KeyPair.generate();

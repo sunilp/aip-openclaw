@@ -4,7 +4,7 @@ import { join, posix } from "node:path";
 import { parse as parseToml } from "smol-toml";
 import picomatch from "picomatch";
 import { base58btc } from "multiformats/bases/base58";
-import { KeyPair } from "@aip-protocol/core";
+import { KeyPair } from "@aip-sdk/core";
 
 export interface VerificationResult {
   valid: boolean;

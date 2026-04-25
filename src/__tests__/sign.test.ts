@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { rmSync } from "node:fs";
 import { signSkill, SignatureEnvelope } from "../sign.js";
-import { KeyPair } from "@aip-protocol/core";
+import { KeyPair } from "@aip-sdk/core";
 
 describe("signSkill", () => {
   let skillDir: string;

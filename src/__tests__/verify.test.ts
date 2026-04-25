@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { rmSync } from "node:fs";
 import { signSkill } from "../sign.js";
 import { verifySkill, VerificationResult } from "../verify.js";
-import { KeyPair } from "@aip-protocol/core";
+import { KeyPair } from "@aip-sdk/core";
 
 describe("verifySkill", () => {
   let skillDir: string;

@@ -4,7 +4,7 @@ import { writeFileSync } from "node:fs";
 import { join, posix } from "node:path";
 import picomatch from "picomatch";
 import { base58btc } from "multiformats/bases/base58";
-import { KeyPair } from "@aip-protocol/core";
+import { KeyPair } from "@aip-sdk/core";
 
 export interface SignatureEnvelope {
   schemaVersion: number;

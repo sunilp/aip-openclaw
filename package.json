@@ -23,9 +23,9 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@aip-protocol/core": "file:../aip-node/packages/core",
-    "@aip-protocol/mcp": "file:../aip-node/packages/mcp",
-    "@aip-protocol/token": "file:../aip-node/packages/token",
+    "@aip-sdk/core": "^0.1.0",
+    "@aip-sdk/mcp": "^0.1.0",
+    "@aip-sdk/token": "^0.1.0",
     "commander": "^12.1.0",
     "multiformats": "^13.4.2",
     "picomatch": "^4.0.0",
