@@ -7,7 +7,13 @@
   "types": "dist/index.d.ts",
   "openclaw": {
     "extensions": ["aip-guard"],
-    "compatibility": ">=2026.4.0"
+    "compatibility": ">=2026.4.0",
+    "compat": {
+      "pluginApi": "1"
+    },
+    "build": {
+      "openclawVersion": "2026.4.0"
+    }
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
