@@ -1,0 +1,30 @@
+{
+  "id": "aip-guard",
+  "name": "AIP Guard",
+  "description": "Delegation verification and capability enforcement for OpenClaw tool calls. Verifies AIP tokens, enforces scope/depth/budget policies, and logs audit-grade allow/deny decisions.",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "policyPath": {
+        "type": "string",
+        "description": "Path to aip-manifest.toml for capability enforcement"
+      },
+      "trustKeys": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Ed25519 public keys (multibase) trusted to sign tokens"
+      },
+      "unsignedSkills": {
+        "type": "string",
+        "enum": ["warn", "block", "allow"],
+        "default": "warn",
+        "description": "Policy for tool calls without AIP tokens"
+      },
+      "auditLog": {
+        "type": "string",
+        "description": "Path for JSONL audit log output"
+      }
+    },
+    "additionalProperties": false
+  }
+}

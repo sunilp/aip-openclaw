@@ -1,0 +1,31 @@
+{
+  "name": "@aip-sdk/openclaw-plugin",
+  "version": "0.1.0",
+  "description": "Native OpenClaw plugin for AIP delegation verification",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "openclaw": {
+    "extensions": ["aip-guard"],
+    "compatibility": ">=2026.4.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aip-sdk/core": "^0.1.0",
+    "@aip-sdk/token": "^0.1.0",
+    "aip-openclaw": "^0.1.0"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "tsup": "^8.0.0",
+    "vitest": "^2.0.0"
+  },
+  "files": ["dist", "openclaw.plugin.json"],
+  "license": "Apache-2.0"
+}
